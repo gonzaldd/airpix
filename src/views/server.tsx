@@ -18,10 +18,18 @@ interface ImagePicker {
 }
 
 const ServerView = () => {
-  const { sendMessage } = useTcpServer();
   const [images, setImages] = useState<any>([]);
   const [selectedImage, setSelectedImage] = useState<ImagePicker | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const onClientConnect = () => {
+    setTimeout(() => {
+      const imagesData = images?.map((itm: any) => itm.base64);
+      sendMessage(imagesData);
+    }, 1000);
+  };
+
+  const { sendMessage } = useTcpServer(null);
 
   const openImagePreview = (image: ImagePicker) => {
     setSelectedImage(image);
@@ -37,7 +45,7 @@ const ServerView = () => {
     const result = await launchImageLibrary({
       selectionLimit: 10,
       mediaType: 'photo',
-      quality: 0.1,
+      quality: 0.5,
       includeBase64: true,
     });
     setImages(result.assets);

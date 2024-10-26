@@ -2,23 +2,17 @@ import { useEffect, useState } from 'react';
 import TcpSocket from 'react-native-tcp-socket';
 
 
-const useTcpServer = (handler?: any) => {
-  const [client, setClient] = useState<any>(null);
-  const [clientAddress, setClientAddress] = useState<any>(null);
+const useTcpServer = (handler?: any, onConnect?: any) => {
+  const [clients, setClients] = useState<Array<any>>([]);
 
   useEffect(() => {
-    const server = TcpSocket.createServer(socket => {
-      const address: any = socket.address();
-      setClient(socket);
+    const server = TcpSocket.createServer(client => {
+      const address: any = client.address();
+      const port = client.remotePort;
 
-      // Guardamos la dirección del cliente en el estado
-      setClientAddress(address?.address);
+      setClients(prevClients => [...prevClients, { [`${address}:${port}`]: client }]);
 
-      socket.on('connect', () => {
-        console.log('SERVER NEW CONNECTION');
-      });
-
-      socket.on('data', data => {
+      client.on('data', data => {
         const dataReceived = JSON.parse(data.toString());
         console.log('SERVER received message:', dataReceived);
         if (handler) {
@@ -26,18 +20,19 @@ const useTcpServer = (handler?: any) => {
         }
       });
 
-      socket.on('error', error => {
+      client.on('error', error => {
         console.log('An error occurred with client socket ', error);
       });
 
-      socket.on('close', () => {
-        console.log('SERVER Closed connection with ', socket.address());
+      client.on('close', () => {
+        console.log('SERVER Closed connection with ', address, port);
       });
     }).listen({ port: 3002, host: 'localhost' });
 
     server.on('connection', (data) => {
       const clientId = `${data.remoteAddress}:${data.remotePort}`;
       console.log('New client in server', clientId);
+      onConnect && onConnect();
     });
 
     server.on('error', error => {
@@ -53,20 +48,22 @@ const useTcpServer = (handler?: any) => {
         console.log('Server closed');
       });
     };
-  }, [handler]);
+  }, [handler, clients.length, onConnect]);
 
   const sendMessage = (message: any) => {
-    if (client) {
-      console.log('SERVER LENGTH', JSON.stringify(message).length);
-      client.write(JSON.stringify(message));
-      // client.write(message);
+    if (clients.length > 0) {
+      clients.forEach((clientObj) => {
+        const clientKey = Object.keys(clientObj)[0];
+        const client = clientObj[clientKey];
+        client.write(JSON.stringify(message));
+      });
     } else {
-      console.log('CLIENT: Cannot send message. No connection established.');
+      console.log('SERVER: Cannot send message. No connection established.');
     }
   };
 
   // Devolvemos la dirección del cliente conectada
-  return { clientAddress, sendMessage };
+  return { sendMessage };
 };
 
 export default useTcpServer;

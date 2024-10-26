@@ -26,6 +26,13 @@ const useTcpSocket = (config?: any) => {
     tcpClient.current.on('close', () => {
       console.log('CLIENT: Connection closed!');
       setIsConnected(false);
+    });
+  }, []);
+
+  const socketError = useCallback(() => {
+    tcpClient.current.on('error', (tcpError: any) => {
+      console.log('CLIENT: Error occurred:', tcpError);
+      setError(tcpError);
       retryId.current = setTimeout(() => {
         console.log('Retry connect');
         tcpClient.current = createClient(config ?? options);
@@ -33,15 +40,8 @@ const useTcpSocket = (config?: any) => {
         socketClose();
       }, 4000);
     });
-  }, [config, tcpClient]);
-
-  const socketError = () => {
-    console.log('Init error');
-    tcpClient.current.on('error', (tcpError: any) => {
-      console.log('CLIENT: Error occurred:', tcpError);
-      setError(tcpError);
-    });
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const newDataFromServer = () => {
     let buffer = '';
@@ -77,7 +77,7 @@ const useTcpSocket = (config?: any) => {
         console.log('CLIENT: Socket destroyed on cleanup');
       }
     };
-  }, [config, socketClose]);
+  }, [config, socketClose, socketError]);
 
   const sendMessage = (message: any) => {
     if (tcpClient.current && isConnected) {
