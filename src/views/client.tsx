@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 // import { Button, ButtonGroup, ButtonText } from '@/components/ui/button';
 
 import useTcpSocket from '../hooks/socketClient';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { Spinner } from '@/components/ui/spinner';
 import Gallery from './gallery';
 
@@ -12,11 +12,12 @@ const ClientView = () => {
     host: 'localhost',
   });
 
-  const { data, isLoading } = useTcpSocket(socketConfig);
+  const { data, isLoading, isConnected } = useTcpSocket(socketConfig);
 
   return (
     <View style={styles.container}>
-      {isLoading && <Spinner />}
+      {(isLoading || !isConnected) && <Spinner />}
+      {(isLoading || !isConnected) && <Text>Conectando al servidor...</Text>}
       {data?.length > 0 && (
         <Gallery
           data={data}

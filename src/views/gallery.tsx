@@ -47,6 +47,7 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width / 3 - 10,
     height: 100,
     margin: 5,
+    borderRadius: 10,
   },
   flatListContent: {
     alignItems: 'center',
