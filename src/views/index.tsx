@@ -1,26 +1,33 @@
-import React from "react";
-import { View, Button, StyleSheet } from "react-native";
-import { createStaticNavigation, useNavigation } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import React from 'react';
+import { View, StyleSheet } from 'react-native';
+import { createStaticNavigation, useNavigation } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { Button, ButtonText, ButtonGroup } from '@/components/ui/button';
 
-import ServerView from "./server";
-import ClientView from "./client";
+import ServerView from './server';
+import ClientView from './client';
 
 const Index = () => {
   const navigation = useNavigation();
 
   const goServer = () => {
-    navigation.navigate("Server");
+    navigation.navigate('Server');
   };
 
   const goClient = () => {
-    navigation.navigate("Client");
+    navigation.navigate('Client');
   };
 
   return (
     <View style={styles.container}>
-      <Button title="Server" onPress={goServer} />
-      <Button title="Client" onPress={goClient} />
+      <ButtonGroup flexDirection="column">
+        <Button size="lg" variant="solid" action="primary" onPress={goServer}>
+          <ButtonText>Compartir Imagenes</ButtonText>
+        </Button>
+        <Button size="lg" variant="solid" action="secondary" onPress={goClient}>
+          <ButtonText>Importar Imagenes</ButtonText>
+        </Button>
+      </ButtonGroup>
     </View>
   );
 };
@@ -28,16 +35,17 @@ const Index = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    gap: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
 const RootStack = createNativeStackNavigator({
   screens: {
-    Home: { screen: Index, options: { title: "Home" } },
-    Server: { screen: ServerView },
-    Client: { screen: ClientView },
+    Home: { screen: Index, options: { headerShown: false } },
+    Server: { screen: ServerView, options: { headerShown: false } },
+    Client: { screen: ClientView, options: { headerShown: false } },
   },
 });
 

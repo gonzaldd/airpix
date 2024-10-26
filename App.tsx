@@ -1,5 +1,8 @@
 import React from 'react';
 
+import "./global.css";
+import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
+
 import {
   SafeAreaView,
   ScrollView,
@@ -49,14 +52,12 @@ import useSocketServer from './src/hooks/socketServer';
 // }, 3000);
 
 function App(): React.JSX.Element {
-  // const clientAddress: any = useSocketServer();
-
   return (
-    <SafeAreaView>
-      <ScrollView contentContainerStyle={styles.container}>
-        <Main />
-      </ScrollView>
-    </SafeAreaView>
+    <GluestackUIProvider mode="light"><SafeAreaView>
+        <ScrollView contentContainerStyle={styles.container}>
+          <Main />
+        </ScrollView>
+      </SafeAreaView></GluestackUIProvider>
   );
 }
 
