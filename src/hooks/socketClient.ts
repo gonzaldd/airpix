@@ -23,7 +23,7 @@ const useTcpSocket = (config?: any) => {
 
 
   const socketClose = useCallback(() => {
-    tcpClient.current.on('close', () => {
+    tcpClient?.current?.on('close', () => {
       console.log('CLIENT: Connection closed!');
       setIsConnected(false);
     });
@@ -72,8 +72,8 @@ const useTcpSocket = (config?: any) => {
 
     return () => {
       if (tcpClient) {
-        tcpClient.current?.destroy();
-        retryId.current && clearTimeout(retryId.current);
+        // tcpClient?.current?.destroy();
+        retryId?.current && clearTimeout(retryId?.current);
         console.log('CLIENT: Socket destroyed on cleanup');
       }
     };
@@ -81,7 +81,7 @@ const useTcpSocket = (config?: any) => {
 
   const sendMessage = (message: any) => {
     if (tcpClient.current && isConnected) {
-      tcpClient.current.write(JSON.stringify(message));
+      tcpClient.current?.write(JSON.stringify(message));
     } else {
       console.log('CLIENT: Cannot send message. No connection established.');
     }
