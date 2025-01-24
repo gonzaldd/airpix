@@ -2,6 +2,8 @@
 
 Airpix is a cross-platform mobile application built with React Native that allows users to easily share images between devices on a local network.  It uses a TCP socket connection for direct image transfer, providing a fast and efficient way to share photos without relying on external services or the internet.
 
+![](https://https://github.com/gonzaldd/airpix/blob/main/doc/demo.gif)
+
 ## Features
 
 * **Local Network Sharing:** Share images directly between devices connected to the same Wi-Fi network.
