@@ -1,79 +1,72 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# Airpix: Image Sharing App
 
-# Getting Started
+Airpix is a cross-platform mobile application built with React Native that allows users to easily share images between devices on a local network.  It uses a TCP socket connection for direct image transfer, providing a fast and efficient way to share photos without relying on external services or the internet.
 
->**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
+## Features
 
-## Step 1: Start the Metro Server
+* **Local Network Sharing:** Share images directly between devices connected to the same Wi-Fi network.
+* **Fast Transfer:**  Utilizes TCP sockets for quick and efficient image transmission.
+* **Simple Interface:**  Easy-to-use interface for selecting and sharing photos.
+* **Image Preview:** View selected images in a modal before sharing.
+* **Cross-Platform:** Works on both iOS and Android devices.
 
-First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
 
-To start Metro, run the following command from the _root_ of your React Native project:
+## How it Works
 
-```bash
-# using npm
-npm start
+Airpix consists of two main roles:
 
-# OR using Yarn
-yarn start
-```
+1. **Server:**  The server device selects images from its library and makes them available for transfer. It displays its local IP address, which the client device needs to connect.
+2. **Client:** The client device enters the server's IP address to establish a connection. Once connected, the server automatically sends the chosen images to the client. The client can then save the received images to their device's gallery.
 
-## Step 2: Start your Application
 
-Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
+## Installation
 
-### For Android
+1. Clone the repository: `git clone https://github.com/gonzaldd/airpix.git`
+2. Navigate to the project directory: `cd airpix`
+3. Install dependencies: `yarn` or `npm install`
 
-```bash
-# using npm
-npm run android
 
-# OR using Yarn
-yarn android
-```
+## Usage
 
-### For iOS
+1. **Server Device:**
+    * Open the app and select "Compartir Imagenes" (Share Images).
+    * Choose the images you want to share from your library.
+    * Note down the displayed IP address.
 
-```bash
-# using npm
-npm run ios
+2. **Client Device:**
+    * Open the app and select "Importar Imagenes" (Import Images).
+    * The app will attempt to connect to the server running on your local machine. Ensure the server is running before attempting to connect. The current implementation connects to 'localhost'. 
+    * Once connected, the server-selected images will appear. Tap an image to save it to your gallery.
 
-# OR using Yarn
-yarn ios
-```
+## Code Overview
 
-If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
+The project uses React Native along with the following key libraries:
 
-This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
+* **`react-native-tcp-socket`:**  Handles TCP socket communication.
+* **`react-native-image-picker`:** Allows users to select images from their library.
+* **`@react-native-camera-roll/camera-roll`:** Enables saving images to the device's gallery.
+* **`@react-native-community/netinfo`:**  Retrieves network information, including the device's IP address.
+* **`@gluestack-ui`:** For UI components.
+* **`nativewind`:** For styling.
 
-## Step 3: Modifying your App
 
-Now that you have successfully run the app, let's modify it.
+## Project Structure
 
-1. Open `App.tsx` in your text editor of choice and edit some lines.
-2. For **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
+* **`components/`**: Contains reusable UI components.
+* **`src/hooks/`**:  Custom hooks for managing TCP socket connections (client and server).
+* **`src/views/`**:  Contains the different screens of the app.
 
-   For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
+## Future Enhancements
 
-## Congratulations! :tada:
+* **Improved Connection Management:**  Implement more robust error handling and connection status indicators.
+* **Progress Bar:** Display a progress bar to show the status of image transfers.
+* **Direct IP Connection:** Allow users to specify the server IP address on the client side.
 
-You've successfully run and modified your React Native App. :partying_face:
 
-### Now what?
+## Contributing
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [Introduction to React Native](https://reactnative.dev/docs/getting-started).
+Contributions are welcome! Please feel free to submit issues and pull requests.
 
-# Troubleshooting
+## License
 
-If you can't get this to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+This project is licensed under the MIT License.
