@@ -41,12 +41,14 @@ const Gallery = ({
   numColumns,
   onPressImage,
   uriKey,
+  title,
 }: {
   data: any;
   keyExtractor: any;
   numColumns?: number;
   onPressImage?: any;
   uriKey?: string;
+  title?: string
 }) => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
@@ -61,7 +63,7 @@ const Gallery = ({
   return (
     <Animated.FlatList
       style={styles.gallery}
-      ListHeaderComponent={<Text style={styles.imgTitle}>Tus imagenes compartidas</Text>}
+      ListHeaderComponent={title === 'server' ? <Text style={styles.imgTitle}>Tus imagenes compartidas</Text> : null}
       data={data}
       keyExtractor={
         keyExtractor ? keyExtractor : (_, index: number) => String(index)

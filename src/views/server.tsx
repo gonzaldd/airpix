@@ -43,7 +43,7 @@ const ServerView = () => {
     const result = await launchImageLibrary({
       selectionLimit: 10,
       mediaType: 'photo',
-      quality: 0.5,
+      quality: 0.2,
       includeBase64: true,
     });
     setImages(result.assets);
@@ -62,15 +62,14 @@ const ServerView = () => {
       {!hasImages && <Text style={styles.ipTitle}>Seleccioná imagenes de tu galeria</Text>}
       {hasImages && <Gallery
         data={images}
+        title="server"
         keyExtractor={(item: any) => item.uri}
         onPressImage={openImagePreview}
         uriKey="uri"
       />}
       <View style={styles.addButton}>
         <Button
-          size="xl"
-          variant="solid"
-          action="primary"
+          size="lg"
           className="rounded-full p-3.5"
           onPress={getImages}>
           <ButtonIcon as={PaperclipIcon} />

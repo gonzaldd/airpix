@@ -50,14 +50,16 @@ const ClientView = () => {
   return (
     <View style={styles.container}>
       {(isLoading || !isConnected) && <Spinner size={'large'} />}
-      {(isLoading || !isConnected) && <Text style={styles.connectionText}>Conectando al servidor...</Text>}
+      {((isLoading || !isConnected) || !isConnected) && <Text style={styles.connectionText}>Conectando al servidor...</Text>}
       {data?.length > 0 && (
         <Gallery
           data={data}
+          title="client"
           keyExtractor={(_: any, index: number) => String(index)}
           onPressImage={confirmSavePhoto}
         />
       )}
+      {isConnected && <Text style={styles.connectionInfo}>Conectado al servidor</Text>}
     </View>
   );
 };
@@ -72,6 +74,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 500,
     marginTop: 20,
+  },
+  connectionInfo: {
+    position: 'absolute',
+    bottom: 10,
+    right: 10,
   },
 });
 

@@ -2,6 +2,7 @@ import React from 'react';
 
 import './global.css';
 import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
+import { DefaultTheme } from '@react-navigation/native';
 
 import {
   SafeAreaView,
@@ -14,7 +15,7 @@ import Main from './src/views';
 function App(): React.JSX.Element {
   return (
     <GluestackUIProvider mode="light">
-      <SafeAreaView>
+      <SafeAreaView style={{ backgroundColor: DefaultTheme.colors.background }}>
         <StatusBar hidden />
         <ScrollView contentContainerStyle={styles.container}>
           <Main />

@@ -30,7 +30,7 @@ const useTcpSocket = (config?: any) => {
   }, []);
 
   const socketError = useCallback(() => {
-    tcpClient.current.on('error', (tcpError: any) => {
+    tcpClient?.current?.on('error', (tcpError: any) => {
       console.log('CLIENT: Error occurred:', tcpError);
       setError(tcpError);
       retryId.current = setTimeout(() => {

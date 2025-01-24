@@ -47,8 +47,13 @@ const useTcpServer = (handler?: any, onConnect?: any) => {
       server.close(() => {
         console.log('Server closed');
       });
+      clients.forEach((clientObj) => {
+        const clientKey = Object.keys(clientObj)[0];
+        const client = clientObj[clientKey];
+        client?.destroy();
+      });
     };
-  }, [handler, clients.length, onConnect]);
+  }, [handler, clients.length, onConnect, clients]);
 
   const sendMessage = (message: any) => {
     if (clients.length > 0) {
