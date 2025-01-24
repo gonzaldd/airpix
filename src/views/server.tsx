@@ -9,7 +9,8 @@ import {
   Text,
 } from 'react-native';
 import { launchImageLibrary } from 'react-native-image-picker';
-import { Button, ButtonText, ButtonGroup } from '@/components/ui/button';
+import { Button, ButtonIcon } from '@/components/ui/button';
+import { PaperclipIcon } from '@/components/ui/icon';
 import NetInfo from '@react-native-community/netinfo';
 
 import useTcpServer from '../hooks/socketServer';
@@ -23,14 +24,8 @@ const ServerView = () => {
   const [images, setImages] = useState<any>([]);
   const [selectedImage, setSelectedImage] = useState<ImagePicker | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [deviceIp, setDeviceIp] = useState<string | null>(null)
-
-  const onClientConnect = () => {
-    setTimeout(() => {
-      const imagesData = images?.map((itm: any) => itm.base64);
-      sendMessage(imagesData);
-    }, 1000);
-  };
+  const [deviceIp, setDeviceIp] = useState<string | null>(null);
+  const hasImages = images?.length > 0;
 
   const { sendMessage } = useTcpServer(null);
 
@@ -56,7 +51,6 @@ const ServerView = () => {
   };
 
   useEffect(() => {
-    // getIpAddress().then((ip) => setDeviceIp(ip));
     NetInfo.fetch().then(state => {
       const ipAddress = (state?.details as { ipAddress: string })?.ipAddress;
       setDeviceIp(ipAddress);
@@ -65,23 +59,27 @@ const ServerView = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.ipTitle}>IP para el cliente:</Text>
-      <Text style={[styles.ipText, styles.pb10]}>{deviceIp}</Text>
-      {images?.length > 0 && <Gallery
+      {!hasImages && <Text style={styles.ipTitle}>Seleccioná imagenes de tu galeria</Text>}
+      {hasImages && <Gallery
         data={images}
         keyExtractor={(item: any) => item.uri}
         onPressImage={openImagePreview}
         uriKey="uri"
       />}
-      <ButtonGroup flexDirection="column">
+      <View style={styles.addButton}>
         <Button
-          size="lg"
+          size="xl"
           variant="solid"
           action="primary"
+          className="rounded-full p-3.5"
           onPress={getImages}>
-          <ButtonText>Elegir Fotos</ButtonText>
+          <ButtonIcon as={PaperclipIcon} />
         </Button>
-      </ButtonGroup>
+      </View>
+
+      <View style={styles.ipText}>
+        <Text style={[styles.ipText]}>{deviceIp}</Text>
+      </View>
       <Modal
         visible={isModalVisible}
         transparent={true}
@@ -107,7 +105,7 @@ const ServerView = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'space-around',
     alignItems: 'center',
   },
   modalContainer: {
@@ -127,15 +125,24 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   ipTitle: {
-    fontSize: 14,
-    fontWeight: 700,
+    fontSize: 18,
+    fontWeight: 500,
   },
   ipText: {
-    fontSize: 19,
-    fontWeight: 700,
+    position: 'absolute',
+    bottom: 10,
+    right: 10,
   },
   pb10: {
     paddingBottom: 10,
+  },
+  mt10: {
+    marginTop: 10,
+  },
+  addButton: {
+    position: 'absolute',
+    bottom: 50,
+    right: 20,
   },
 });
 

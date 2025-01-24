@@ -49,8 +49,8 @@ const ClientView = () => {
 
   return (
     <View style={styles.container}>
-      {(isLoading || !isConnected) && <Spinner />}
-      {(isLoading || !isConnected) && <Text>Conectando al servidor...</Text>}
+      {(isLoading || !isConnected) && <Spinner size={'large'} />}
+      {(isLoading || !isConnected) && <Text style={styles.connectionText}>Conectando al servidor...</Text>}
       {data?.length > 0 && (
         <Gallery
           data={data}
@@ -58,15 +58,6 @@ const ClientView = () => {
           onPressImage={confirmSavePhoto}
         />
       )}
-      {/* <ButtonGroup flexDirection="column">
-        <Button
-          size="lg"
-          variant="solid"
-          action="primary"
-          onPress={() => sendMessage({ action: 'getPhotos' })}>
-          <ButtonText>Test message</ButtonText>
-        </Button>
-      </ButtonGroup> */}
     </View>
   );
 };
@@ -76,6 +67,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  connectionText: {
+    fontSize: 18,
+    fontWeight: 500,
+    marginTop: 20,
   },
 });
 

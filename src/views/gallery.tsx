@@ -1,11 +1,39 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import {
   Dimensions,
-  FlatList,
   Image,
   StyleSheet,
   TouchableOpacity,
+  Animated,
+  Text,
 } from 'react-native';
+
+const RenderItem = ({ item, onPressImage, uriKey }: { item: any, onPressImage: any, uriKey?: string }) => {
+  const itemFadeAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.timing(itemFadeAnim, {
+      toValue: 1,
+      duration: 500, // Duration for each item's fade-in
+      useNativeDriver: true,
+    }).start();
+  }, [itemFadeAnim]);
+
+  return (
+    <TouchableOpacity
+      onPress={onPressImage ? () => onPressImage(item) : () => false}
+    >
+      <Animated.View style={{ opacity: itemFadeAnim }}>
+        <Image
+          source={{
+            uri: uriKey ? item[uriKey] : `data:image/png;base64,${item}`,
+          }}
+          style={styles.image}
+        />
+      </Animated.View>
+    </TouchableOpacity>
+  );
+};
 
 const Gallery = ({
   data,
@@ -20,21 +48,25 @@ const Gallery = ({
   onPressImage?: any;
   uriKey?: string;
 }) => {
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 2000, // You can adjust the duration as needed
+      useNativeDriver: true,
+    }).start();
+  }, [fadeAnim]);
+
   return (
-    <FlatList
+    <Animated.FlatList
+      style={styles.gallery}
+      ListHeaderComponent={<Text style={styles.imgTitle}>Tus imagenes compartidas</Text>}
       data={data}
       keyExtractor={
         keyExtractor ? keyExtractor : (_, index: number) => String(index)
       }
-      renderItem={({ item }: { item: any }) => (
-        <TouchableOpacity
-          onPress={onPressImage ? () => onPressImage(item) : () => false}>
-          <Image
-            source={{ uri: uriKey ? item[uriKey] : `data:image/png;base64,${item}` }}
-            style={styles.image}
-          />
-        </TouchableOpacity>
-      )}
+      renderItem={(props) => <RenderItem {...props} onPressImage={onPressImage} uriKey={uriKey} />}
       numColumns={numColumns ?? 3}
       contentContainerStyle={styles.flatListContent}
       scrollEnabled={false}
@@ -51,6 +83,14 @@ const styles = StyleSheet.create({
   },
   flatListContent: {
     alignItems: 'center',
+  },
+  gallery: {
+    maxHeight: '80%',
+  },
+  imgTitle: {
+    fontSize: 20,
+    fontWeight: 500,
+    marginBottom: 10,
   },
 });
 
