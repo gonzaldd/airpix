@@ -60,7 +60,11 @@ const useTcpServer = (handler?: any, onConnect?: any) => {
       clients.forEach((clientObj) => {
         const clientKey = Object.keys(clientObj)[0];
         const client = clientObj[clientKey];
-        client.write(JSON.stringify(message));
+        try {
+          client.write(JSON.stringify(message));
+        } catch (error) {
+          console.log('Error on send data.');
+        }
       });
     } else {
       console.log('SERVER: Cannot send message. No connection established.');
