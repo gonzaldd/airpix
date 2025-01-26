@@ -1,23 +1,33 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import { createStaticNavigation, useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Button, ButtonText, ButtonGroup, ButtonIcon } from '@/components/ui/button';
 import { DownloadIcon, ShareIcon } from '@/components/ui/icon';
+import NetInfo from '@react-native-community/netinfo';
+
 
 import ServerView from './server';
 import ClientView from './client';
 
 const Index = () => {
+  const [deviceIp, setDeviceIp] = useState<string | null>(null);
   const navigation = useNavigation();
 
   const goServer = () => {
-    navigation.navigate('Server');
+    navigation.navigate('Server', { deviceIp });
   };
 
   const goClient = () => {
     navigation.navigate('Client');
   };
+
+  useEffect(() => {
+    NetInfo.fetch().then(state => {
+      const ipAddress = (state?.details as { ipAddress: string })?.ipAddress;
+      setDeviceIp(ipAddress);
+    });
+  }, []);
 
   return (
     <View style={styles.container}>

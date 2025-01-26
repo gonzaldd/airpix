@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-// import { Button, ButtonGroup, ButtonText } from '@/components/ui/button';
 
 import useTcpSocket from '../hooks/socketClient';
 import { StyleSheet, Text, View, Alert } from 'react-native';
@@ -7,14 +6,15 @@ import { Spinner } from '@/components/ui/spinner';
 import Gallery from './gallery';
 import RNFS from 'react-native-fs';
 import { CameraRoll } from '@react-native-camera-roll/camera-roll';
+import { Input, InputField } from '@/components/ui/input';
+import { Button, ButtonText } from '@/components/ui/button';
 
 const ClientView = () => {
-  const [socketConfig] = useState({
+  const [socketConfig, setSocketConfig] = useState({
     port: 3002,
     host: 'localhost',
   });
-
-  const { data, isLoading, isConnected } = useTcpSocket(socketConfig);
+  const [submit, setSubmit] = useState(false);
 
   const saveBase64ImageToGallery = async (base64Image: any) => {
     const filePath = `${RNFS.DocumentDirectoryPath}/image.jpg`;
@@ -46,6 +46,39 @@ const ClientView = () => {
       { cancelable: true }
     );
   };
+
+  if (!submit) {
+    return <View style={styles.container}>
+      <View style={styles.input}>
+        <Text style={styles.title}>Conectar al servidor</Text>
+        <Input
+          variant="outline"
+          size="md"
+          isDisabled={false}
+          isInvalid={false}
+          isReadOnly={false}
+        >
+          <InputField
+            autoFocus
+            placeholder="Introduce la IP del servidor"
+            onChangeText={(value) => setSocketConfig({ ...socketConfig, host: value })}
+          />
+        </Input>
+        <Button
+          size="lg"
+          onPress={() => setSubmit(true)}
+          style={styles.button}>
+          <ButtonText>Iniciar conexión</ButtonText>
+        </Button>
+      </View>
+    </View>;
+  }
+
+  return <GalleryView socketConfig={socketConfig} confirmSavePhoto={confirmSavePhoto} />;
+};
+
+const GalleryView = ({ socketConfig, confirmSavePhoto }: { socketConfig: any, confirmSavePhoto: any }) => {
+  const { data, isLoading, isConnected } = useTcpSocket(socketConfig);
 
   return (
     <View style={styles.container}>
@@ -79,6 +112,18 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 10,
     right: 10,
+  },
+  input: {
+    width: '80%',
+  },
+  title: {
+    fontSize: 20,
+    textAlign: 'center',
+    fontWeight: 600,
+    marginBottom: 20,
+  },
+  button: {
+    marginVertical: 10,
   },
 });
 

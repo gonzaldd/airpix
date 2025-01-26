@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import TcpSocket from 'react-native-tcp-socket';
 
 
-const useTcpServer = (handler?: any, onConnect?: any) => {
+const useTcpServer = (deviceIp: string, handler?: any, onConnect?: any) => {
   const [clients, setClients] = useState<Array<any>>([]);
 
   useEffect(() => {
@@ -27,7 +27,7 @@ const useTcpServer = (handler?: any, onConnect?: any) => {
       client.on('close', () => {
         console.log('SERVER Closed connection with ', address, port);
       });
-    }).listen({ port: 3002, host: 'localhost' });
+    }).listen({ port: 3002, host: deviceIp });
 
     server.on('connection', (data) => {
       const clientId = `${data.remoteAddress}:${data.remotePort}`;
@@ -53,7 +53,7 @@ const useTcpServer = (handler?: any, onConnect?: any) => {
         client?.destroy();
       });
     };
-  }, [handler, clients.length, onConnect, clients]);
+  }, [handler, clients.length, onConnect, clients, deviceIp]);
 
   const sendMessage = (message: any) => {
     if (clients.length > 0) {

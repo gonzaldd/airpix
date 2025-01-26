@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Image,
   View,
@@ -11,10 +11,10 @@ import {
 import { launchImageLibrary } from 'react-native-image-picker';
 import { Button, ButtonIcon } from '@/components/ui/button';
 import { PaperclipIcon } from '@/components/ui/icon';
-import NetInfo from '@react-native-community/netinfo';
 
 import useTcpServer from '../hooks/socketServer';
 import Gallery from './gallery';
+import { useRoute } from '@react-navigation/native';
 
 interface ImagePicker {
   uri: string
@@ -24,10 +24,11 @@ const ServerView = () => {
   const [images, setImages] = useState<any>([]);
   const [selectedImage, setSelectedImage] = useState<ImagePicker | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [deviceIp, setDeviceIp] = useState<string | null>(null);
+  const route = useRoute();
+  const { deviceIp } = route?.params as { deviceIp: string };
   const hasImages = images?.length > 0;
 
-  const { sendMessage } = useTcpServer(null);
+  const { sendMessage } = useTcpServer(deviceIp);
 
   const openImagePreview = (image: ImagePicker) => {
     setSelectedImage(image);
@@ -49,13 +50,6 @@ const ServerView = () => {
     setImages(result.assets);
     sendMessage(result.assets?.map(itm => itm.base64));
   };
-
-  useEffect(() => {
-    NetInfo.fetch().then(state => {
-      const ipAddress = (state?.details as { ipAddress: string })?.ipAddress;
-      setDeviceIp(ipAddress);
-    });
-  }, []);
 
   return (
     <View style={styles.container}>
