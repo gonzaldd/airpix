@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 
-import useTcpSocket from '../hooks/socketClient';
+import useTcpSocket from 'hooks/useSocketClient';
 import { StyleSheet, Text, View, Alert } from 'react-native';
 import { Spinner } from '@/components/ui/spinner';
-import Gallery from './gallery';
+import Gallery from 'components/gallery';
 import RNFS from 'react-native-fs';
 import { CameraRoll } from '@react-native-camera-roll/camera-roll';
 import { Input, InputField } from '@/components/ui/input';

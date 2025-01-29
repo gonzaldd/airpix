@@ -1,34 +1,32 @@
 import React, { useState } from 'react';
 import {
-  Image,
   View,
   StyleSheet,
   Dimensions,
-  Modal,
-  TouchableOpacity,
   Text,
 } from 'react-native';
-import { launchImageLibrary } from 'react-native-image-picker';
 import { Button, ButtonIcon } from '@/components/ui/button';
 import { PaperclipIcon } from '@/components/ui/icon';
-
-import useTcpServer from '../hooks/socketServer';
-import Gallery from './gallery';
 import { useRoute } from '@react-navigation/native';
+
+import useSocketServer from 'hooks/useSocketServer';
+import Gallery from 'components/gallery';
+import useImageSelection from 'hooks/useImageSelection';
+import ImagePreview from 'components/imagePreview';
 
 interface ImagePicker {
   uri: string
 }
 
 const ServerView = () => {
-  const [images, setImages] = useState<any>([]);
+  const { images, getImages } = useImageSelection();
   const [selectedImage, setSelectedImage] = useState<ImagePicker | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const route = useRoute();
   const { deviceIp } = route?.params as { deviceIp: string };
   const hasImages = images?.length > 0;
 
-  const { sendMessage } = useTcpServer(deviceIp);
+  const { sendMessage } = useSocketServer(deviceIp);
 
   const openImagePreview = (image: ImagePicker) => {
     setSelectedImage(image);
@@ -40,15 +38,9 @@ const ServerView = () => {
     setSelectedImage(null);
   };
 
-  const getImages = async () => {
-    const result = await launchImageLibrary({
-      selectionLimit: 10,
-      mediaType: 'photo',
-      quality: 0.2,
-      includeBase64: true,
-    });
-    setImages(result.assets);
-    sendMessage(result.assets?.map(itm => itm.base64));
+  const handleImageSelection = async () => {
+    await getImages();
+    sendMessage(images?.map(itm => itm.base64));
   };
 
   return (
@@ -65,7 +57,7 @@ const ServerView = () => {
         <Button
           size="lg"
           className="rounded-full p-3.5"
-          onPress={getImages}>
+          onPress={handleImageSelection}>
           <ButtonIcon as={PaperclipIcon} />
         </Button>
       </View>
@@ -73,24 +65,7 @@ const ServerView = () => {
       <View style={styles.ipText}>
         <Text style={[styles.ipText]}>{deviceIp}</Text>
       </View>
-      <Modal
-        visible={isModalVisible}
-        transparent={true}
-        animationType="fade"
-        onRequestClose={closeImagePreview}>
-        <View style={styles.modalContainer}>
-          <TouchableOpacity
-            style={styles.modalBackground}
-            onPress={closeImagePreview}>
-            {selectedImage && (
-              <Image
-                source={{ uri: selectedImage.uri }}
-                style={styles.previewImage}
-              />
-            )}
-          </TouchableOpacity>
-        </View>
-      </Modal>
+      <ImagePreview visible={isModalVisible} image={selectedImage} onClose={closeImagePreview} />
     </View>
   );
 };

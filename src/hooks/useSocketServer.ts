@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import TcpSocket from 'react-native-tcp-socket';
 
 
-const useTcpServer = (deviceIp: string, handler?: any, onConnect?: any) => {
+const useSocketServer = (deviceIp: string, handler?: any, onConnect?: any) => {
   const [clients, setClients] = useState<Array<any>>([]);
 
   useEffect(() => {
@@ -75,4 +75,4 @@ const useTcpServer = (deviceIp: string, handler?: any, onConnect?: any) => {
   return { sendMessage };
 };
 
-export default useTcpServer;
+export default useSocketServer;
