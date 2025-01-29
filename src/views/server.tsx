@@ -11,15 +11,12 @@ import { useRoute } from '@react-navigation/native';
 
 import useSocketServer from 'hooks/useSocketServer';
 import Gallery from 'components/gallery';
-import useImageSelection from 'hooks/useImageSelection';
+import useImageSelection, { ImagePicker } from 'hooks/useImageSelection';
 import ImagePreview from 'components/imagePreview';
 
-interface ImagePicker {
-  uri: string
-}
-
 const ServerView = () => {
-  const { images, getImages } = useImageSelection();
+  const [images, setImages] = useState<ImagePicker[]>([]);
+  const { getImages } = useImageSelection();
   const [selectedImage, setSelectedImage] = useState<ImagePicker | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const route = useRoute();
@@ -39,8 +36,9 @@ const ServerView = () => {
   };
 
   const handleImageSelection = async () => {
-    await getImages();
-    sendMessage(images?.map(itm => itm.base64));
+    const selectedImages = await getImages();
+    sendMessage(selectedImages?.map(itm => itm.base64));
+    setImages(selectedImages ?? []);
   };
 
   return (

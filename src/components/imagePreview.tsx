@@ -1,9 +1,11 @@
 import React from 'react';
 import { Modal, View, TouchableOpacity, Image, Dimensions, StyleSheet } from 'react-native';
 
+import { ImagePicker } from 'hooks/useImageSelection';
+
 interface ImagePreviewProps {
   visible: boolean;
-  image: { uri: string } | null;
+  image: ImagePicker | null;
   onClose: () => void;
 }
 
